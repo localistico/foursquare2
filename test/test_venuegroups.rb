@@ -20,9 +20,12 @@ class TestVenuegroups < Test::Unit::TestCase
     end
 
     should "update a venuegroup" do
-      stub_post("https://api.foursquare.com/v2/venuegroups/4e15cd13b61c42e7c54e5bb6/update?oauth_token=#{@client.oauth_token}?venueId=4b8c3d87f964a520f7c532e3,4d572bcc9e508cfab975189b", "venuegroups/venuegroup_update.json")
-      venuegroup = @client.venuegroup("4e15cd13b61c42e7c54e5bb6")
-      venuegroup.venues.count == 2
+      stub_request(:post, "https://api.foursquare.com/v2/venuegroups/4e15cd13b61c42e7c54e5bb6/update").
+        with(:query => hash_including(:oauth_token => @client.oauth_token)).
+        to_return(:body => fixture_file("venuegroups/venuegroup_update.json"),
+                  :headers => { 'Content-Type' => 'application/json; charset=utf-8' })
+      venuegroup = @client.venuegroup_update("4e15cd13b61c42e7c54e5bb6", venueId: "4b8c3d87f964a520f7c532e3,4d572bcc9e508cfab975189b")
+      venuegroup.venues.count.should == 2
     end
 
   end

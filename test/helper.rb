@@ -1,22 +1,4 @@
 require "rubygems"
-
-# FakeWeb uses File.exists? which was removed in Ruby 3.2
-unless File.respond_to?(:exists?)
-  class File
-    class << self
-      alias_method :exists?, :exist?
-    end
-  end
-end
-
-# FakeWeb's StubSocket is missing #close needed by Ruby 3.2+ net/http
-require "fakeweb"
-module FakeWeb
-  class StubSocket
-    def close; end
-  end
-end
-
 require "bundler"
 begin
   Bundler.setup(:default, :development)
@@ -28,9 +10,8 @@ end
 require "test/unit"
 require "shoulda"
 require "matchy"
-require "fakeweb"
+require "webmock/test_unit"
 require "json"
-# require 'hashie'
 require "awesome_print"
 require "mocha/test_unit"
 
@@ -39,14 +20,12 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 require "foursquare2"
 require "config"
 
-FakeWeb.allow_net_connect = false
-
 def foursquare_test_client
   Foursquare2::Client.new(:oauth_token => "yeehaw")
 end
 
 def foursquare_url(url)
-  url =~ /^http/ ? url : "http://api.foursquare.com/v2#{url}"
+  url =~ /^http/ ? url : "https://api.foursquare.com/v2#{url}"
 end
 
 def fixture_file(filename, options={})
@@ -63,19 +42,19 @@ def fixture_file(filename, options={})
 end
 
 def stub_get(url, filename, options={})
-  opts = {
-    :body => error_or_standard_body(filename, options),
-    :content_type => "application/json; charset=utf-8"
-  }.merge(options)
-  FakeWeb.register_uri(:get, foursquare_url(url), opts)
+  body = error_or_standard_body(filename, options)
+  stub_request(:get, foursquare_url(url)).to_return(
+    :body => body,
+    :headers => { 'Content-Type' => 'application/json; charset=utf-8' }
+  )
 end
 
 def stub_post(url, filename, options={})
-  opts = {
-    :body => error_or_standard_body(filename, options),
-    :content_type => "application/json; charset=utf-8"
-  }.merge(options)
-  FakeWeb.register_uri(:post, foursquare_url(url), opts)
+  body = error_or_standard_body(filename, options)
+  stub_request(:post, foursquare_url(url)).to_return(
+    :body => body,
+    :headers => { 'Content-Type' => 'application/json; charset=utf-8' }
+  )
 end
 
 def error_or_standard_body(filename, options)

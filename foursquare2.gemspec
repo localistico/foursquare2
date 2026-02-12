@@ -30,7 +30,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rake", ">= 10.3.1"
   s.add_development_dependency("awesome_print", [">= 0"])
   s.add_development_dependency("shoulda", [">= 0"])
-  s.add_development_dependency("fakeweb", ["~> 1.3"])
+  s.add_development_dependency("webmock", ["~> 3.0"])
   s.add_development_dependency("json_pure", [">= 1.4"])
   s.add_development_dependency("multi_json", ["< 2.0.0", ">= 0.0.5"])
   s.add_development_dependency("test-unit", ["~> 3.0"])
