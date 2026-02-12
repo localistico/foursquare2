@@ -1,4 +1,22 @@
 require "rubygems"
+
+# FakeWeb uses File.exists? which was removed in Ruby 3.2
+unless File.respond_to?(:exists?)
+  class File
+    class << self
+      alias_method :exists?, :exist?
+    end
+  end
+end
+
+# FakeWeb's StubSocket is missing #close needed by Ruby 3.2+ net/http
+require "fakeweb"
+module FakeWeb
+  class StubSocket
+    def close; end
+  end
+end
+
 require "bundler"
 begin
   Bundler.setup(:default, :development)
@@ -14,7 +32,7 @@ require "fakeweb"
 require "json"
 # require 'hashie'
 require "awesome_print"
-require "mocha/setup"
+require "mocha/test_unit"
 
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), "..", "lib"))
 $LOAD_PATH.unshift(File.dirname(__FILE__))

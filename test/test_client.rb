@@ -81,13 +81,11 @@ class TestClient < Test::Unit::TestCase
                     [FaradayMiddleware::ParseJson, {:content_type => /\bjson$/}]]
       client = Foursquare2::Client.new(:connection_middleware => middleware)
 
-      Faraday::RackBuilder.any_instance.expects(:use).at_least_once
-      Faraday::RackBuilder.any_instance.expects(:use). \
-        with(FaradayMiddleware::Instrumentation)
-      Faraday::RackBuilder.any_instance.expects(:use). \
-        with(FaradayMiddleware::ParseJson, :content_type => /\bjson$/)
-
-      client.connection
+      handler_classes = client.connection.builder.handlers.map(&:klass)
+      assert handler_classes.include?(FaradayMiddleware::Instrumentation),
+        "Expected connection to include FaradayMiddleware::Instrumentation"
+      assert handler_classes.include?(FaradayMiddleware::ParseJson),
+        "Expected connection to include FaradayMiddleware::ParseJson"
     end
   end
 
