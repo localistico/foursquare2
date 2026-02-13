@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
   s.rubygems_version = "1.8.23"
   s.summary = "Foursquare API v2 gem in the spirit of the original foursquare gem"
 
-  s.add_runtime_dependency("faraday", ["~> 1.10"])
+  s.add_runtime_dependency("faraday", [">= 0.17", "< 2.0"])
   s.add_runtime_dependency("faraday_middleware", [">= 0.12.2"])
   s.add_runtime_dependency("hashie", ["< 4.0.0", ">= 3.6.0"])
   s.add_development_dependency("bundler", [">= 1.0"])
