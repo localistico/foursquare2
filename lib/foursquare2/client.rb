@@ -3,10 +3,10 @@ require 'forwardable'
 module Foursquare2
   class Client
     DEFAULT_CONNECTION_MIDDLEWARE = [
-      Faraday::Request::Multipart,
+      Faraday::Multipart::Middleware,
       Faraday::Request::UrlEncoded,
       Foursquare2::MashifyWrapper,
-      FaradayMiddleware::ParseJson
+      Faraday::Response::Json
     ].freeze
 
     extend Forwardable

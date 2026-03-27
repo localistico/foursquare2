@@ -1,5 +1,6 @@
 require "faraday"
-require "faraday_middleware"
+require "faraday/multipart"
+require "faraday/mashify"
 require "hashie/mash"
 
 __dir__

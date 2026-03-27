@@ -77,15 +77,15 @@ class TestClient < Test::Unit::TestCase
     end
 
     should "apply the middleware to the connection" do
-      middleware = [FaradayMiddleware::Instrumentation,
-                    [FaradayMiddleware::ParseJson, {:content_type => /\bjson$/}]]
+      middleware = [Faraday::Request::Instrumentation,
+                    [Faraday::Response::Json, {:content_type => /\bjson$/}]]
       client = Foursquare2::Client.new(:connection_middleware => middleware)
 
       handler_classes = client.connection.builder.handlers.map(&:klass)
-      assert handler_classes.include?(FaradayMiddleware::Instrumentation),
-        "Expected connection to include FaradayMiddleware::Instrumentation"
-      assert handler_classes.include?(FaradayMiddleware::ParseJson),
-        "Expected connection to include FaradayMiddleware::ParseJson"
+      assert handler_classes.include?(Faraday::Request::Instrumentation),
+        "Expected connection to include Faraday::Request::Instrumentation"
+      assert handler_classes.include?(Faraday::Response::Json),
+        "Expected connection to include Faraday::Response::Json"
     end
   end
 
